@@ -40,13 +40,13 @@ def all_articles(request, page):
     return render(request, 'post/all_articles.html', {'articles': articles, })
 
 
-@login_required
+# @login_required
 def dlt_article(request, article_id):
     get_object_or_404(Article, id=article_id).delete()
     return HttpResponseRedirect(reverse('post:index'))
 
 
-@login_required
+# @login_required
 def to_public(request, article_id):
     article = get_object_or_404(Article, id=article_id)
     article.private = False
@@ -54,7 +54,7 @@ def to_public(request, article_id):
     return HttpResponseRedirect(reverse('post:index'))
 
 
-@login_required
+# @login_required
 def to_private(request, article_id):
     article = get_object_or_404(Article, id=article_id)
     article.private = True
@@ -62,7 +62,7 @@ def to_private(request, article_id):
     return HttpResponseRedirect(reverse('post:index'))
 
 
-@login_required
+# @login_required
 def write(request):
     return render(request, 'post/write.html')
 
@@ -73,7 +73,7 @@ class DetailView(generic.DetailView):
     context_object_name = 'article'
 
 
-@login_required
+# @login_required
 def edit(request, article_id):
     article = get_object_or_404(Article, pk=article_id)
     if request.method == 'GET':
