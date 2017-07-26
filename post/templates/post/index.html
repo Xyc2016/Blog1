@@ -1,0 +1,31 @@
+{% extends 'post/base.html' %}
+{% block content %}
+
+    <br>
+    {% for article in articles %}
+
+        <div class="card card-block">
+            <a href="{% url 'post:detail' article.id %}" class="card-title card-link">
+                <h4>  {{ article.title }} <br></h4>
+            </a>
+            <p class="card-text">  {{ article.text }}  </p>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'post:dlt_article'  article.id %}" class="card-link">Delete</a>
+                {% if article.private %}
+                    <a href="{% url 'post:to_public' article.id %}" class="card-link">To Public</a>
+                {% else %}
+                    <a href="{% url 'post:to_private' article.id %}" class="card-link">To Private</a>
+                {% endif %}
+            {% endif %}
+            <p style="font-size: small">
+                {{ article.pub_date }}
+            </p>
+        </div>
+        <br>
+    {% endfor %}
+    <a href="{% url 'post:all_articles' '1' %}" role="button">Show All</a>
+    <br>
+    <br>
+    <br>
+    <br>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'post/base.html' %}
+{% block title %}
+    Detail
+{% endblock %}
+
+{% block content %}
+    <br>
+    <br>
+
+    <div class="card card-block">
+        <h4 class="card-title">{{ article.title }}</h4>
+        <p  style="font-size: small"> {{ article.pub_date }} </p>
+        <br>
+        <br>
+        <p class="card-text">  {{ article.text }}  </p>
+
+        {% if request.user.is_authenticated %}
+            <br>
+            <br>
+            <a href="{% url 'post:edit' article.id %}" class="card-link">Edit</a>
+        {% endif %}
+    </div>
+
+
+    <form action="{% url 'post:add_comment' article.id %}" method="post">
+        {% csrf_token %}
+        <label for="text" style="padding: 10px">Add Comment</label>
+        <input type="text" id="text" name="text" class="form-control">
+        <label for="visitor" style="padding: 10px">Your Name</label>
+        <input type="text" id="visitor" name="visitor" class="form-control">
+        <br>
+        <button type="submit" class="btn btn-default ">Submit Comment</button>
+    </form>
+    <br>
+
+    <h1>Comments:</h1>
+
+
+    {% for comment in article.comment_set.all %}
+        <div class="card card-block">
+            <p class="card-text">{{ comment.text }}</p>
+            <p  style="font-size: small">From: {{ comment.visitor }}
+                At: {{ comment.pub_date }}
+            </p>
+        </div>
+    {% endfor %}
+
+{% endblock %}
