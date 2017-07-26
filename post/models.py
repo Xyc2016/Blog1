@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 class Article(models.Model):
     title = models.TextField()
     text = models.TextField()
-    show = models.BooleanField()
+    show = models.BooleanField(default=False)
     pub_date = models.DateTimeField('date published')
     private = models.BooleanField(default=False)
 
