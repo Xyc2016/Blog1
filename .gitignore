@@ -2,3 +2,10 @@ venv
 *.pyc
 staticfiles
 .env
+.idea/dataSources/dc8cb8a7-8523-4027-a112-6f43b30c6c83/_src_/
+.idea/dataSources/dc8cb8a7-8523-4027-a112-6f43b30c6c83/_staging_/
+Blog/__pycache__/
+accounts/__pycache__/
+accounts/migrations/__pycache__/
+post/__pycache__/
+post/migrations/__pycache__/
