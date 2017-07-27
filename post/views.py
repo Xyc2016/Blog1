@@ -6,9 +6,19 @@ from django.urls import reverse
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django import forms
 
 
 # Create your views here.
+
+
+
+class CommentForm(forms.Form):
+    name = forms.CharField()
+    url = forms.URLField()
+    comment = forms.CharField(widget=forms.Textarea)
+    private = forms.CheckboxInput()
+
 
 def index(request, page='1'):
     if request.user.is_authenticated:
@@ -17,6 +27,7 @@ def index(request, page='1'):
         article_list = Article.objects.filter(private=False, show=True)
     paginator = Paginator(article_list, 7)
     articles = paginator.page(int(page))
+
     return render(request, 'post/index.html', {'articles': articles, })
 
 
@@ -24,9 +35,6 @@ def get_json(request):
     return JsonResponse({
         'result': request.GET['arg'] * 15
     })
-
-
-
 
 
 def all_articles(request, page):
@@ -62,9 +70,35 @@ def to_private(request, article_id):
     return HttpResponseRedirect(reverse('post:index'))
 
 
+class ArticleForm(forms.Form):
+    title = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Input the title',
+
+    }))
+    text = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control',
+        'placeholder': 'Write the Article',
+    }))
+    private = forms.BooleanField(widget=forms.CheckboxInput(attrs={
+        # 'class': 'form-control',
+    }), required=False)
+    show = forms.BooleanField(widget=forms.CheckboxInput(attrs={
+        # 'class':'form-control',
+    }), required=False)
+
+
 # @login_required
 def write(request):
-    return render(request, 'post/write.html')
+    print(ArticleForm(initial={
+        'subject': 'Hi Django',
+    }))
+    articleform = ArticleForm(data={
+        'title': 'wqwqeqweqe'
+    })
+    return render(request, 'post/write.html', {
+        'articleform': articleform,
+    })
 
 
 class DetailView(generic.DetailView):
@@ -75,9 +109,20 @@ class DetailView(generic.DetailView):
 
 # @login_required
 def edit(request, article_id):
+    print('-----------------')
+    print(article_id)
+    print('-------------------------')
     article = get_object_or_404(Article, pk=article_id)
     if request.method == 'GET':
-        return render(request, 'post/edit.html', {'article': article})
+        articleform = ArticleForm(
+            data={
+                'title': article.title,
+                'text': article.text,
+                'private': article.private,
+                'show': article.show,
+            })
+        return render(request, 'post/edit.html', {'article': article,
+                                                  'articleform': articleform}, )
     elif request.method == 'POST':
         article.title = request.POST['title']
         article.text = request.POST['text']
@@ -97,6 +142,8 @@ def add_comment(request, article_id):
 def create(request):
     article = Article(title=request.POST['title'],
                       text=request.POST['text'],
+                      show=request.POST.get('show', False),
+                      private=request.POST.get('private', False),
                       pub_date=timezone.now())
     article.save()
     return HttpResponseRedirect(reverse('post:index'))
