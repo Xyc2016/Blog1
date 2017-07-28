@@ -90,12 +90,7 @@ class ArticleForm(forms.Form):
 
 # @login_required
 def write(request):
-    print(ArticleForm(initial={
-        'subject': 'Hi Django',
-    }))
-    articleform = ArticleForm(data={
-        'title': 'wqwqeqweqe'
-    })
+    articleform = ArticleForm()
     return render(request, 'post/write.html', {
         'articleform': articleform,
     })
@@ -109,9 +104,6 @@ class DetailView(generic.DetailView):
 
 # @login_required
 def edit(request, article_id):
-    print('-----------------')
-    print(article_id)
-    print('-------------------------')
     article = get_object_or_404(Article, pk=article_id)
     if request.method == 'GET':
         articleform = ArticleForm(
